@@ -57,6 +57,11 @@ As of now, the following tools are available:
 
 - Inbox
   - `twist_inbox_get`: Get the contents of the user's inbox
+  - `twist_inbox_archive_all`: Archives all threads in a workspace (or, all threads after a given timestamp)
+  - `twist_inbox_archive`: Archives a specific thread by ID
+  - `twist_inbox_unarchive`: Unarchives a specific thread by ID
+  - `twist_inbox_mark_all_read`: Marks all inbox threads as read
+  - `twist_inbox_get_count`: Gets the count of inbox threads
 
 ## License
 

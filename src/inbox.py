@@ -2,7 +2,7 @@
 
 import logging
 import os
-from typing import Optional, List
+from typing import Optional, List, Union
 from mcp.server.fastmcp import Context
 
 from src.api import twist_request
@@ -28,16 +28,13 @@ def twist_inbox_get(
         order_by: Order of threads: 'desc' (default) or 'asc', based on last_updated attribute
         exclude_thread_ids: Thread IDs to exclude from results
     """
-    # Get the token from the context
     token = ctx.request_context.lifespan_context.twist_token
 
-    # Get the workspace ID from environment
     workspace_id = os.getenv("TWIST_WORKSPACE_ID")
     if not workspace_id:
         logger.error("TWIST_WORKSPACE_ID environment variable is required")
         return "Error: TWIST_WORKSPACE_ID environment variable is required"
 
-    # Build parameters
     params = {"workspace_id": workspace_id}
 
     if limit is not None:
@@ -56,7 +53,6 @@ def twist_inbox_get(
     try:
         logger.info(f"Getting inbox for workspace ID: {workspace_id}")
 
-        # Make the API request
         inbox_data = twist_request("inbox/get", params=params, token=token)
 
         if not inbox_data:
@@ -68,3 +64,137 @@ def twist_inbox_get(
     except Exception as error:
         logger.error(f"Error getting inbox: {error}")
         return f"Error getting inbox: {str(error)}"
+
+def twist_inbox_archive_all(
+    ctx: Context,
+    older_than_ts: Optional[int] = None
+) -> str:
+    """Archives all threads in a workspace.
+
+    Args:
+        older_than_ts: Only archives threads that are the same or older than this timestamp
+    """
+    token = ctx.request_context.lifespan_context.twist_token
+
+    workspace_id = os.getenv("TWIST_WORKSPACE_ID")
+    if not workspace_id:
+        logger.error("TWIST_WORKSPACE_ID environment variable is required")
+        return "Error: TWIST_WORKSPACE_ID environment variable is required"
+
+    params = {"workspace_id": workspace_id}
+
+    if older_than_ts is not None:
+        params["older_than_ts"] = older_than_ts
+
+    try:
+        logger.info(f"Archiving all inbox threads for workspace ID: {workspace_id}")
+
+        result = twist_request("inbox/archive_all", params=params, token=token, method="POST")
+
+        logger.info("Successfully archived all inbox threads")
+        return "Successfully archived all inbox threads"
+    except Exception as error:
+        logger.error(f"Error archiving all inbox threads: {error}")
+        return f"Error archiving all inbox threads: {str(error)}"
+
+def twist_inbox_archive(
+    ctx: Context,
+    id: int
+) -> str:
+    """Archives a thread.
+
+    Args:
+        id: The ID of the thread to archive
+    """
+    token = ctx.request_context.lifespan_context.twist_token
+
+    params = {"id": id}
+
+    try:
+        logger.info(f"Archiving thread with ID: {id}")
+
+        result = twist_request("inbox/archive", params=params, token=token, method="POST")
+
+        logger.info(f"Successfully archived thread with ID: {id}")
+        return f"Successfully archived thread with ID: {id}"
+    except Exception as error:
+        logger.error(f"Error archiving thread: {error}")
+        return f"Error archiving thread: {str(error)}"
+
+def twist_inbox_unarchive(
+    ctx: Context,
+    id: int
+) -> str:
+    """Unarchives a thread.
+
+    Args:
+        id: The ID of the thread to unarchive
+    """
+    token = ctx.request_context.lifespan_context.twist_token
+
+    params = {"id": id}
+
+    try:
+        logger.info(f"Unarchiving thread with ID: {id}")
+
+        result = twist_request("inbox/unarchive", params=params, token=token, method="POST")
+
+        logger.info(f"Successfully unarchived thread with ID: {id}")
+        return f"Successfully unarchived thread with ID: {id}"
+    except Exception as error:
+        logger.error(f"Error unarchiving thread: {error}")
+        return f"Error unarchiving thread: {str(error)}"
+
+def twist_inbox_mark_all_read(
+    ctx: Context
+) -> str:
+    """Marks all inbox threads in the workspace as read.
+    """
+    token = ctx.request_context.lifespan_context.twist_token
+
+    workspace_id = os.getenv("TWIST_WORKSPACE_ID")
+    if not workspace_id:
+        logger.error("TWIST_WORKSPACE_ID environment variable is required")
+        return "Error: TWIST_WORKSPACE_ID environment variable is required"
+
+    params = {"workspace_id": workspace_id}
+
+    try:
+        logger.info(f"Marking all inbox threads as read for workspace ID: {workspace_id}")
+
+        result = twist_request("inbox/mark_all_read", params=params, token=token, method="POST")
+
+        logger.info("Successfully marked all inbox threads as read")
+        return "Successfully marked all inbox threads as read"
+    except Exception as error:
+        logger.error(f"Error marking all inbox threads as read: {error}")
+        return f"Error marking all inbox threads as read: {str(error)}"
+
+def twist_inbox_get_count(
+    ctx: Context
+) -> Union[str, dict]:
+    """Gets inbox count in a workspace for the authenticated user.
+    """
+    token = ctx.request_context.lifespan_context.twist_token
+
+    workspace_id = os.getenv("TWIST_WORKSPACE_ID")
+    if not workspace_id:
+        logger.error("TWIST_WORKSPACE_ID environment variable is required")
+        return "Error: TWIST_WORKSPACE_ID environment variable is required"
+
+    params = {"workspace_id": workspace_id}
+
+    try:
+        logger.info(f"Getting inbox count for workspace ID: {workspace_id}")
+
+        count_data = twist_request("inbox/get_count", params=params, token=token)
+
+        if not count_data:
+            logger.info("Failed to get inbox count")
+            return "Failed to get inbox count"
+
+        logger.info(f"Retrieved inbox count: {count_data}")
+        return count_data
+    except Exception as error:
+        logger.error(f"Error getting inbox count: {error}")
+        return f"Error getting inbox count: {str(error)}"

@@ -8,7 +8,14 @@ from dataclasses import dataclass
 from mcp.server.fastmcp import FastMCP
 
 from src.api import get_api_client
-from src.inbox import twist_inbox_get
+from src.inbox import (
+    twist_inbox_get,
+    twist_inbox_archive_all,
+    twist_inbox_archive,
+    twist_inbox_unarchive,
+    twist_inbox_mark_all_read,
+    twist_inbox_get_count
+)
 
 # Setup logging
 logging.basicConfig(
@@ -39,6 +46,11 @@ mcp = FastMCP("Twist MCP Server", lifespan=app_lifespan)
 
 # Register inbox tools
 mcp.tool()(twist_inbox_get)
+mcp.tool()(twist_inbox_archive_all)
+mcp.tool()(twist_inbox_archive)
+mcp.tool()(twist_inbox_unarchive)
+mcp.tool()(twist_inbox_mark_all_read)
+mcp.tool()(twist_inbox_get_count)
 
 # Run the server
 if __name__ == "__main__":
