@@ -1,0 +1,11 @@
+[project]
+name = "twist-mcp-server"
+version = "0.1.0"
+description = "A Twist MCP server written in Python"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]>=1.6.0",
+    "requests>=2.30.0",
+]
+license = "MIT"
