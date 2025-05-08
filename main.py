@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import inspect
 from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
 from dataclasses import dataclass
@@ -8,14 +9,8 @@ from dataclasses import dataclass
 from mcp.server.fastmcp import FastMCP
 
 from src.api import get_api_client
-from src.inbox import (
-    twist_inbox_get,
-    twist_inbox_archive_all,
-    twist_inbox_archive,
-    twist_inbox_unarchive,
-    twist_inbox_mark_all_read,
-    twist_inbox_get_count
-)
+import src.inbox
+import src.threads
 
 # Setup logging
 logging.basicConfig(
@@ -44,13 +39,12 @@ async def app_lifespan(server: FastMCP) -> AsyncIterator[TwistContext]:
 # Create an MCP server
 mcp = FastMCP("Twist MCP Server", lifespan=app_lifespan)
 
-# Register inbox tools
-mcp.tool()(twist_inbox_get)
-mcp.tool()(twist_inbox_archive_all)
-mcp.tool()(twist_inbox_archive)
-mcp.tool()(twist_inbox_unarchive)
-mcp.tool()(twist_inbox_mark_all_read)
-mcp.tool()(twist_inbox_get_count)
+# Register all tools from tool modules
+for module in [src.inbox, src.threads]:
+    for name, func in inspect.getmembers(module, inspect.isfunction):
+        if name.startswith('twist_') and func.__module__ == module.__name__:
+            logger.info(f"Registering tool: {name}")
+            mcp.tool()(func)
 
 # Run the server
 if __name__ == "__main__":

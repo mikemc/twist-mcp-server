@@ -46,13 +46,6 @@ Add the Twist MCP server to the set of MCP servers in your claude_desktop_config
 
 ## Available Tools
 
-To see currently available tools, run:
-
-```sh
-# With GNU grep installed as ggrep (as with `brew install grep` on Mac)
-ggrep -Po '(?<=^mcp.tool\(\)\()([^)]+)' main.py
-```
-
 As of now, the following tools are available:
 
 - Inbox
@@ -62,6 +55,25 @@ As of now, the following tools are available:
   - `twist_inbox_unarchive`: Unarchives a specific thread by ID
   - `twist_inbox_mark_all_read`: Marks all inbox threads as read
   - `twist_inbox_get_count`: Gets the count of inbox threads
+- Threads
+  - `twist_threads_getone`: Get a thread by ID
+  - `twist_threads_get`: Get all threads in a channel
+  - `twist_threads_add`: Add a new thread to a channel
+  - `twist_threads_update`: Update an existing thread
+  - `twist_threads_remove`: Remove a thread
+  - `twist_threads_star`: Star a thread
+  - `twist_threads_unstar`: Unstar a thread
+  - `twist_threads_pin`: Pin a thread
+  - `twist_threads_unpin`: Unpin a thread
+  - `twist_threads_move_to_channel`: Move a thread to a different channel
+  - `twist_threads_get_unread`: Get unread threads in the workspace
+  - `twist_threads_mark_read`: Mark a thread as read
+  - `twist_threads_mark_unread`: Mark a thread as unread
+  - `twist_threads_mark_unread_for_others`: Mark a thread as unread for others
+  - `twist_threads_mark_all_read`: Mark all threads as read in a workspace or channel
+  - `twist_threads_clear_unread`: Clear unread threads in the workspace
+  - `twist_threads_mute`: Mute a thread for a number of minutes
+  - `twist_threads_unmute`: Unmute a thread
 
 ## License
 
