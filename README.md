@@ -2,6 +2,10 @@
 
 An MCP server for interacting with a [Twist](https://twist.com/home) workspace. Written in Python using the [Twist REST API](https://developer.twist.com/v3/). Currently for testing purposes only.
 
+<a href="https://glama.ai/mcp/servers/@mikemc/twist-mcp-server">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@mikemc/twist-mcp-server/badge" alt="Twist Server MCP server" />
+</a>
+
 ## Installation
 
 ### Prerequisites
